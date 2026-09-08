@@ -15,75 +15,129 @@ scores = [78, 92, 64, 87, 55, 73, 69, 96, 90]
 qualification_score = 70
 distinction_score = 90
 
+for name, score in zip(participants, scores):
+    print(f"{name}: {score}")
 
-# Make sure the lists have the same number of elements
+new_name = input("Enter participant's name: ").strip()
+new_score_input = input("Enter participant's score: ").strip()
 
+if new_name == "":
+    print("Name cannot be empty!")
+elif new_name in participants:
+    print(f"{new_name} is already registered!")
+else:
+    try:
+        new_score = float(new_score_input)
+        if 0 <= new_score <= 100:
+            participants.append(new_name)
+            scores.append(new_score)
+            print(f"{new_name} has been successfully registered!")
+        else:
+            print("Score must be between 0 and 100!")
+    except ValueError:
+        print("Score must be a number!")
 
+search_name = input("Enter participant's name to search: ").strip()
 
-# First, display all the current participants with their scores. Use zip()
+if search_name in participants:
+    index = participants.index(search_name)
+    score = scores[index]
+    print(f"Name: {search_name}")
+    print(f"Score: {score}")
+    if score > distinction_score:
+        print("DISTINCTION")
+    elif score >= qualification_score:
+        print("QUALIFIED")
+    else:
+        print("NOT QUALIFIED")
+else:
+    print(f"{search_name} not found!")
 
+for name, score in zip(participants, scores):
+    if score > distinction_score:
+        status = "DISTINCTION"
+    elif score >= qualification_score:
+        status = "QUALIFIED"
+    else:
+        status = "NOT QUALIFIED"
+    print(f"{name}: {score} - {status}")
 
+has_distinction = False
+all_passed = True
 
-# Write the logic to accept a new participant's name and their score. 
-# While entering, also check if they are already in the list of participants. 
-# If the participant is already registered, display a message and do not add them to the list.
-# If the name is empty, then print an error saying that the name cannot be empty, and don't add them to the list.
-# If the score is not a number, then print an error saying that the score must be a number, and don't add them to the list.
-# If the score is less than 0 or greater than 100, then print an error saying that the score must be between 0 and 100, and don't add them to the list.
-# Otherwise, add the participant and their score to the lists and display a message saying that they have been successfully registered.
+for score in scores:
+    if score > distinction_score:
+        has_distinction = True
+    if score < 50:
+        all_passed = False
 
+print(f"Has distinction: {has_distinction}")
+print(f"All passed: {all_passed}")
 
+update_name = input("Enter participant's name to update: ").strip()
 
+if update_name in participants:
+    index = participants.index(update_name)
+    new_score_input = input("Enter new score: ").strip()
+    try:
+        new_score = float(new_score_input)
+        if 0 <= new_score <= 100:
+            scores[index] = new_score
+            print(f"{update_name}'s score has been updated!")
+        else:
+            print("Score must be between 0 and 100!")
+    except ValueError:
+        print("Score must be a number!")
+else:
+    print(f"{update_name} not found!")
 
-# Write the logic to search for a specific participant.
-# If the participant is found, display their name, score, and whether they are qualified or not.
-# If the score is more than the distinction score, display that they have a DISTINCTION.
-# If the score is more than the qualification score, display that they are QUALIFIED.
-# Otherwise, display that they are NOT QUALIFIED.
-# If the participant is not found, display a message saying that they are not found.
+remove_name = input("Enter participant's name to withdraw: ").strip()
 
+if remove_name in participants:
+    index = participants.index(remove_name)
+    participants.remove(remove_name)
+    scores.pop(index)
+    print(f"{remove_name} has been withdrawn!")
+else:
+    print(f"{remove_name} not found!")
 
+pairs = list(zip(participants, scores))
+pairs.sort(key=lambda x: x[1], reverse=True)
 
+for rank, (name, score) in enumerate(pairs, start=1):
+    print(f"#{rank}: {name} - {score}")
 
-# Display every participant's name, score, and whether they are qualified or not. 
+if scores:
+    highest = max(scores)
+    lowest = min(scores)
+    average = sum(scores) / len(scores)
+    
+    highest_count = scores.count(highest)
+    lowest_count = scores.count(lowest)
+    
+    distinction_count = sum(1 for score in scores if score > distinction_score)
+    qualified_count = sum(1 for score in scores if qualification_score <= score <= distinction_score)
+    not_qualified_count = sum(1 for score in scores if score < qualification_score)
+    
+    print(f"Highest Score: {highest} (found in {highest_count} participant(s))")
+    print(f"Lowest Score: {lowest} (found in {lowest_count} participant(s))")
+    print(f"Average Score: {average:.2f}")
+    print(f"Participants with DISTINCTION: {distinction_count}")
+    print(f"Participants QUALIFIED: {qualified_count}")
+    print(f"Participants NOT QUALIFIED: {not_qualified_count}")
 
+print("\n--- FINAL REPORT ---")
+for rank, (name, score) in enumerate(pairs, start=1):
+    if score > distinction_score:
+        status = "DISTINCTION"
+    elif score >= qualification_score:
+        status = "QUALIFIED"
+    else:
+        status = "NOT QUALIFIED"
+    print(f"Rank #{rank}: {name} - Score: {score} - {status}")
 
-
-
-
-
-
-# Write the logic to find if there's even one participant that has a distinction, and if all the participants have passed (i.e., scored 50 or more).
-
-
-# Write the logic to update a participant's score.
-# Ensure that the participant exists in the list before updating their score. 
-# Also ensure that the new score is a valid number between 0 and 100.
-
-
-
-
-# Write the logic to withdraw (remove) a participant from the list.
-# Ensure that the score for that specific participant is also removed from the scores list
-
-
-
-
-# Create and display a scoreboard where all the participants and their scores are displayed in descending order.
-# Display their rank alongside the participant name and score
-
-
-
-
-
-# Calculate statistics: 
-# Calculate what the highest score is, what lowest score is, what the average score is.
-# Calculate how many participants have the highest score and the lowest score
-# Calculate how many participants have distinctions, how many are qualified, and how many are not qualified
-
-
-
-
-# Generate a final report that displays the participant name, their rank, their score, and their qualification (DISTINCTION, QUALIFIED, NOT QUALIFIED)
-# Also the display all the statistics you calculated above
-
+print(f"Total Participants: {len(pairs)}")
+print(f"Highest Score: {highest} (achieved by {highest_count} participant(s))")
+print(f"Lowest Score: {lowest} (achieved by {lowest_count} participant(s))")
+print(f"Average Score: {average:.2f}")
+print(f"Distinctions: {distinction_count}")
